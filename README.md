@@ -2,7 +2,7 @@
 
 Prerequisites:
 
-- Python >3
+- Knowledge of Python 3, PHP 8 (Laravel), Composer, Node.js, React.js (NextJS), NPM, MySQL
 
 ## Submodules
 
@@ -49,8 +49,9 @@ The `api` submodule uses the Python scripts in subfolder `/qiskit` to run quantu
 
 In order to use the quantum implementation of this project, you must first delete the `/api/qiskit/utils.py` and `/api/qiskit/get_info.py` files, then create two symlinks as follows:
 
-- from `/get_info.py` to `/api/qiskit/get_info.py`
-- from `/utils.py` to `/api/qiskit/utils.py`
+- from `/api/qiskit/get_info.py` to `/get_info.py`
+- from `/api/qiskit/utils.py` to `/utils.py`
+- from `/api/qiskit/quantum_simulator` to `/quantum_simulator.py`
 
 For instance, on Unix-compliant operating systems, one can create a symlink using the following command:
 
@@ -59,4 +60,4 @@ $ cd /api/qiskit
 $ ln ./../../get_info.py get_info.py
 ```
 
-This successfully creates a symlink between our implementation of the `get_info.py` script and the file invoqued by the API (ie, `/api/qiskit/get_info.py`) for the quantum logic. Now repeat the same instructions to create a symlink for the `utils.py` script.
+This successfully creates a symlink between our implementation of the `get_info.py` script and the file invoqued by the API (ie, `/api/qiskit/get_info.py`) for the quantum logic. Now repeat the same instructions to create a symlink for the other two scripts.

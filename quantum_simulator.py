@@ -133,6 +133,19 @@ class State:
 
         return state_amplitudes
     
+    # Same as above but returns an array of values without the keys
+    def calculate_state_amplitudes_arr(self):
+        norm = np.linalg.norm(self.state)
+        if not np.isclose(norm, 1.0):
+            raise ValueError("Input state vector must be normalized.")
+        n_qubits = int(np.log2(len(self.state)))
+        state_amplitudes = []
+        for i in range(2 ** n_qubits):
+            amplitude = self.state[i]
+            state_amplitudes.append(amplitude)
+
+        return state_amplitudes
+    
     def display_state_amplitudes(self):
         state_amplitudes = self.calculate_state_amplitudes()
         # Display the state amplitudes

@@ -5,6 +5,8 @@ import numpy as np
 from fractions import Fraction
 import math
 import json
+import sys
+from quantum_simulator import State
 
 # Call example: 
 # `python3 get_info.py 2 2 5 CX 0 1 H 0 H 0 I 1 H 1`
@@ -61,6 +63,54 @@ for _ in range(num_instructions):
         pos += 3
     instructions.append({"gate": gate, "qubits": qubits, "bits": bits, "parameters": parameters})
 
+qc = State(n_qubits=num_qubits)
+qc.initialize_state([0, 0])
+
+for instruction in instructions:
+    if instruction["gate"] == 'H':
+        qc.apply_H_gate(instruction["qubits"][0])
+
+statevector = qc.calculate_state_amplitudes_arr()
+
+phases = np.angle(statevector)
+
+dummyProbabilities = [
+        {
+            'value': convert_to_binary(i, num_bits), 
+            'probability': (1 / (2 ** num_bits)) * 100
+        } for i in range(2 ** num_bits)
+    ] if num_bits > 0 else None
+
+# TODO: Probalitatile vor fi calculate pentru BITI (nu qubiti) daca avem cel putin un bit
+# Array-ul probabilities trebuie sa aiba formatul
+'''
+[
+    {"value": "00", "probability": 100.0},
+    {"value": "01", "probability": 0}, 
+    {"value": "10", "probability": 0}, 
+    {"value": "11", "probability": 0}
+]
+'''
+# adica cate o intrare pentru fiecare configuratie de biti
+
+output = {
+    'probabilities': dummyProbabilities, # TODO
+    'qubits': None, # not implemented on front-end, leave it empty
+    'statevector': {
+        'amplitudes': [{
+            'base': convert_to_binary(index, num_qubits),
+            'amplitude': np.round(np.absolute(statevector[index]), 3),
+        } for index in range(len(statevector))],
+        'phases': [np.round(i, 6) for i in phases],
+        'phases_str': [angle_to_expression(i) for i in phases],
+        'dump': "[{}]".format(", ".join(str(np.round(i, 3)) for i in statevector))
+    }
+}
+print(json.dumps(output))
+
+raise SystemExit(0)
+
+# Below is the original code that runs the Qiskit quantum logic
 # Create a quantum circuit with the specified number of qubits
 circuit = QuantumCircuit(num_qubits, num_bits)
 
@@ -117,7 +167,6 @@ if simulate:
     result = execute(circuit, backend, shots=_shots).result()
     counts = result.get_counts()
     print(json.dumps(counts))
-    
 else:
     backend = Aer.get_backend('statevector_simulator')
     result = backend.run(circuit, shots = shots).result()
@@ -160,6 +209,7 @@ else:
             })
 
     # Get qubit stats if the circuit has no classical bits
+    # NOT YET IMPLEMENTED ON FRONT_END, IGNORE IT
     if num_bits == 0:
         output["qubits"] = []
         # Compute the probability of each qubit being in state 1

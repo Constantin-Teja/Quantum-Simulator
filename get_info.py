@@ -70,43 +70,63 @@ for instruction in instructions:
     if instruction["gate"] == 'H':
         qc.apply_H_gate(instruction["qubits"][0])
 
-statevector = qc.calculate_state_amplitudes_arr()
 
-phases = np.angle(statevector)
+# Daca e request de simulare, rulam circuitul de un anumit numar de ori si intoarcem doar probabilitatile
+shots = 1000  # Number of shots for the simulation
 
-dummyProbabilities = [
-        {
-            'value': convert_to_binary(i, num_bits), 
-            'probability': (1 / (2 ** num_bits)) * 100
-        } for i in range(2 ** num_bits)
-    ] if num_bits > 0 else None
-
-# TODO: Probalitatile vor fi calculate pentru BITI (nu qubiti) daca avem cel putin un bit
-# Array-ul probabilities trebuie sa aiba formatul
-'''
-[
-    {"value": "00", "probability": 100.0},
-    {"value": "01", "probability": 0}, 
-    {"value": "10", "probability": 0}, 
-    {"value": "11", "probability": 0}
-]
-'''
-# adica cate o intrare pentru fiecare configuratie de biti
-
-output = {
-    'probabilities': dummyProbabilities, # TODO
-    'qubits': None, # not implemented on front-end, leave it empty
-    'statevector': {
-        'amplitudes': [{
-            'base': convert_to_binary(index, num_qubits),
-            'amplitude': np.round(np.absolute(statevector[index]), 3),
-        } for index in range(len(statevector))],
-        'phases': [np.round(i, 6) for i in phases],
-        'phases_str': [angle_to_expression(i) for i in phases],
-        'dump': "[{}]".format(", ".join(str(np.round(i, 3)) for i in statevector))
+if simulate:
+    # TODO
+    if "--shots" in sys.argv:
+        index = sys.argv.index("--shots")
+        _shots = int(sys.argv[index + 1])
+    else:
+        _shots = shots
+    counts = { 
+        '00': shots / 4,
+        '01': shots / 4,
+        '10': shots / 4,
+        '11': shots / 4
     }
-}
-print(json.dumps(output))
+    print(json.dumps(counts))
+else:
+    # Daca nu e request de simulare, returnam toate datele
+    statevector = qc.calculate_state_amplitudes_arr()
+
+    phases = np.angle(statevector)
+
+    dummyProbabilities = [
+            {
+                'value': convert_to_binary(i, num_bits), 
+                'probability': (1 / (2 ** num_bits)) * 100
+            } for i in range(2 ** num_bits)
+        ] if num_bits > 0 else None
+
+    # TODO: Probalitatile vor fi calculate pentru BITI (nu qubiti) daca avem cel putin un bit
+    # Array-ul probabilities trebuie sa aiba formatul
+    '''
+    [
+        {"value": "00", "probability": 100.0},
+        {"value": "01", "probability": 0}, 
+        {"value": "10", "probability": 0}, 
+        {"value": "11", "probability": 0}
+    ]
+    '''
+    # adica cate o intrare pentru fiecare configuratie de biti
+
+    output = {
+        'probabilities': dummyProbabilities, # TODO
+        'qubits': None, # not implemented on front-end, leave it empty
+        'statevector': {
+            'amplitudes': [{
+                'base': convert_to_binary(index, num_qubits),
+                'amplitude': np.round(np.absolute(statevector[index]), 3),
+            } for index in range(len(statevector))],
+            'phases': [np.round(i, 6) for i in phases],
+            'phases_str': [angle_to_expression(i) for i in phases],
+            'dump': "[{}]".format(", ".join(str(np.round(i, 3)) for i in statevector))
+        }
+    }
+    print(json.dumps(output))
 
 raise SystemExit(0)
 

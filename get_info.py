@@ -1,6 +1,6 @@
 import sys
 from qiskit import QuantumCircuit, Aer, quantum_info, execute
-from utils import convert_to_binary, eval_simple_fraction, angle_to_expression
+from utils import convert_to_binary, eval_simple_fraction, angle_to_expression, convert_to_builtin_type
 import numpy as np
 from fractions import Fraction
 import math
@@ -69,6 +69,42 @@ qc.initialize_state([0, 0])
 for instruction in instructions:
     if instruction["gate"] == 'H':
         qc.apply_H_gate(instruction["qubits"][0])
+    elif instruction["gate"] == 'X':
+        qc.apply_X_gate(instruction["qubits"][0])
+    if instruction["gate"] == 'CX':
+        continue
+    if instruction["gate"] == "Tfl":
+        continue
+    if instruction["gate"] == "SWAP":
+        continue
+    if instruction["gate"] == "Z":
+        qc.apply_Z_gate(target_qubit=instruction["qubits"][0])
+    if instruction["gate"] == "S":
+        qc.apply_S_gate(target_qubit=instruction["qubits"][0])
+    if instruction["gate"] == "S+":
+        qc.apply_S_dag_gate(target_qubit=instruction["qubits"][0])
+    if instruction["gate"] == "T":
+         qc.apply_T_gate(target_qubit=instruction["qubits"][0])
+    if instruction["gate"] == "T+":
+        qc.apply_T_dag_gate(target_qubit=instruction["qubits"][0])
+    if instruction["gate"] == "P":
+        qc.apply_P_gate(target_qubit=instruction["qubits"][0], phi=instruction["parameters"][0])
+    if instruction["gate"] == "RX":
+        continue
+    if instruction["gate"] == "RY":
+        continue
+    if instruction["gate"] == "RZ":
+        continue
+    if instruction["gate"] == 'Y':
+        continue
+    if instruction["gate"] == 'U':
+        continue
+    if instruction["gate"] == "SX":
+        continue
+    if instruction["gate"] == "SX+":
+        continue
+    if instruction["gate"] == "M":
+        continue
 
 
 # Daca e request de simulare, rulam circuitul de un anumit numar de ori si intoarcem doar probabilitatile
@@ -126,7 +162,7 @@ else:
             'dump': "[{}]".format(", ".join(str(np.round(i, 3)) for i in statevector))
         }
     }
-    print(json.dumps(output))
+    print(json.dumps(output, default=convert_to_builtin_type))
 
 raise SystemExit(0)
 

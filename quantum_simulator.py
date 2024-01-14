@@ -131,6 +131,24 @@ class State:
 
         self.apply_gate(CU_gate, 2, target_qubit)
 
+    def apply_P_gate(self, target_qubit, phi):
+        self.apply_gate(np.array([[1, 0], [0, np.exp(1j * phi)]]), 1, target_qubit)
+    
+    def apply_Z_gate(self, target_qubit):
+        self.apply_gate(np.array([[1, 0], [0, -1]]), 1, target_qubit)
+
+    def apply_S_gate(self, target_qubit):
+        self.apply_gate(np.array([[1, 0], [0, np.exp((1j * np.pi)/2)]]), 1, target_qubit)
+
+    def apply_S_dag_gate(self, target_qubit):
+        self.apply_gate(np.array([[1, 0], [0, np.exp(-(1j * np.pi)/2)]]), 1, target_qubit)
+
+    def apply_T_gate(self, target_qubit):
+        self.apply_gate(np.array([[1, 0], [0, np.exp((1j * np.pi)/4)]]), 1, target_qubit)
+    
+    def apply_T_dag_gate(self, target_qubit):
+        self.apply_gate(np.array([[1, 0], [0, np.exp(-(1j * np.pi)/4)]]), 1, target_qubit)
+
     def compute_probabilities(self):
         probabilities = np.abs(self.state)**2
 

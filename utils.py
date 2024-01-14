@@ -77,3 +77,7 @@ def angle_to_expression(angle):
         else:
             expression = "{}π/{}".format(numerator, denominator)
     return expression
+
+def convert_to_builtin_type(obj):
+    if isinstance(obj, np.float32):
+        return float(obj)

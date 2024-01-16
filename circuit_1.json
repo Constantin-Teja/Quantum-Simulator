@@ -1,0 +1,85 @@
+{
+  "n_qubits": 2,
+  "transformations": [
+    [
+      "H",
+      [
+        1,
+        0
+      ]
+    ],
+    [
+      "CNOT",
+      [
+        2,
+        0
+      ]
+    ]
+  ],
+  "input_state": {
+    "n_qubits": 2,
+    "state": [
+      [
+        {
+          "__complex__": true,
+          "real": 1.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ]
+    ]
+  },
+  "system_state": {
+    "n_qubits": 2,
+    "state": [
+      [
+        {
+          "__complex__": true,
+          "real": 0.7071067811865475,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.7071067811865475,
+          "imag": 0.0
+        }
+      ]
+    ]
+  }
+}

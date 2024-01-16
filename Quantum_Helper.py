@@ -32,6 +32,10 @@ class Quantum_Helper:
         return Quantum_Helper.__qubit_basis[base_name]
     
     @staticmethod
+    def set_base(base_name, matrix):
+        Quantum_Helper.__qubit_basis[base_name] = matrix
+
+    @staticmethod
     def compute_measurement_matrix(pure_state):
         return np.dot(pure_state, Quantum_Helper.compute_adjoint(pure_state))
 

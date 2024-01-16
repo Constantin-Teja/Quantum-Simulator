@@ -24,8 +24,17 @@ class Circuit:
         for transf, args in self.transformations:
             self.system_state.apply_gate(Gate.gates[transf], args[0], args[1])
 
-    def apply_transformation(self, transformation: Tr, args):
-        self.transformations.append([transformation, args])
+    def apply_transformation(self, transformation, args):
+        self.transformations.append([transformation.name, args])
+
+    def show_stats(self):
+        self.system_state.display_state()        
+        print("Measurement in COMPUTATIONAL basis", self.system_state.produce_measurement())
+        print("Measurement in HADAMARD basis", self.system_state.produce_measurement("HADAMARD"))
+        print("Density operator in COMPUTATIONAL basis:")
+        print(self.system_state.compute_density_matrix())
+        print("Density operator in HADAMARD basis:")
+        print(self.system_state.compute_density_matrix("HADAMARD"))
 
     def export_circuit(self, json_name):
         serialized_data = serialize_data(self)

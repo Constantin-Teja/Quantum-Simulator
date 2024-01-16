@@ -5,3 +5,4 @@ class Transformation(Enum):
     Z = 2
     Y = 3
     H = 4
+    CNOT = 5

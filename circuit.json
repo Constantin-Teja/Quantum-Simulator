@@ -1,0 +1,141 @@
+{
+  "n_qubits": 3,
+  "transformations": [
+    [
+      "H",
+      [
+        1,
+        0
+      ]
+    ],
+    [
+      "X",
+      [
+        1,
+        1
+      ]
+    ]
+  ],
+  "input_state": {
+    "n_qubits": 3,
+    "state": [
+      [
+        {
+          "__complex__": true,
+          "real": 1.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ]
+    ]
+  },
+  "system_state": {
+    "n_qubits": 3,
+    "state": [
+      [
+        {
+          "__complex__": true,
+          "real": 1.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ],
+      [
+        {
+          "__complex__": true,
+          "real": 0.0,
+          "imag": 0.0
+        }
+      ]
+    ]
+  }
+}

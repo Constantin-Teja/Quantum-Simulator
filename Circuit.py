@@ -57,7 +57,7 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().default(obj)
  
 def object_hook(dct):
-    if isinstance(dct, (State)):
+    if isinstance(dct, (State, Gate, Circuit)):
         return dct
 
     if '__complex__' in dct:
@@ -72,7 +72,11 @@ def object_hook(dct):
         n_qubits = int(dct['n_qubits'])
         state = [object_hook(st) for st in dct["state"]]
         return State(n_qubits=n_qubits, state=np.array(state))
-
+    elif '_Gate__n_qubits' in dct and '_Gate__gate' in dct:
+        #n_qubits = dct['_Gate__n_qubits']
+        gate_matrix = object_hook(dct['_Gate__gate'])
+        return Gate(np.array(gate_matrix))
+    
     return dct
     
 def serialize_data(obj):
@@ -81,16 +85,20 @@ def serialize_data(obj):
 def deserialize_data(json_data):
     return json.loads(json_data, object_hook=object_hook)
 
-# # Serialize to JSON
-# serialized_data = json.dumps(obj.__dict__)
+# TODO: move
+def export_gate(gate, json_name):
+    serialized_data = serialize_data(gate)
+    
+    with open(json_name, "w") as file:
+        file.write(serialized_data)
 
-# # Writing to a file (optional)
-# with open("serialized_data.json", "w") as file:
-#     file.write(serialized_data)
+# TODO: move
+def import_gate(json_name):
+    json_object = None
+    with open(json_name, "r") as file:
+        json_object = file.read()
 
-# # Deserialize from JSON
-# json_data = json.loads(serialized_data)
-# reconstructed_obj = MyClass(**json_data)
+    return deserialize_data(json_object)
         
         # param1: pe cati qubiti e transf
         # param2: de la care qubit se inceapa

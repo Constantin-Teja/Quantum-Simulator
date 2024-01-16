@@ -28,83 +28,94 @@ simulate = False
 if "--simulate" in sys.argv:
     simulate = True
 
-# Read the instructions
-instructions = []
-pos = 4
-for _ in range(num_instructions):
-    gate = sys.argv[pos]
-    qubits = []
-    bits = []
-    parameters = []
-    if gate in ['I', 'H', 'X', 'Z', 'S', 'S+', 'T', 'T+', 'Y', 'SX', 'SX+']:
-        qubits = [int(sys.argv[pos+1])]
-        pos += 2
-    elif gate in ['CX', 'SWAP']:
-        qubits = [int(sys.argv[pos + 1]), int(sys.argv[pos + 2])] # KetBy first saves the target, then the control (as opposed to qiskit)
-        pos += 3
-    elif gate in ['Tfl']:
-        qubits = [int(sys.argv[pos + 1]), int(sys.argv[pos + 2]), int(sys.argv[pos + 3])]
-        pos += 4
-    elif gate in ['P', 'RX', 'RY', 'RZ']:
-        qubits = [int(sys.argv[pos + 1])]
-        parameters = [eval_simple_fraction(sys.argv[pos + 2])]
-        pos += 3
-    elif gate in ['U']:
-        qubits = [int(sys.argv[pos + 1])]
-        parameters = [
-            eval_simple_fraction(sys.argv[pos + 2]), 
-            eval_simple_fraction(sys.argv[pos + 3]), 
-            eval_simple_fraction(sys.argv[pos + 4])
-        ]
-        pos += 5
-    elif gate in ['M']:
-        qubits = [int(sys.argv[pos + 1])]
-        bits = [int(sys.argv[pos + 2])]
-        pos += 3
-    instructions.append({"gate": gate, "qubits": qubits, "bits": bits, "parameters": parameters})
+from Circuit import Circuit, import_gate, export_gate, serialize_data, CustomJSONEncoder
 
-qc = State(n_qubits=num_qubits)
-qc.initialize_state([0, 0])
+qc = None
 
-for instruction in instructions:
-    if instruction["gate"] == 'H':
-        qc.apply_H_gate(instruction["qubits"][0])
-    elif instruction["gate"] == 'X':
-        qc.apply_X_gate(instruction["qubits"][0])
-    if instruction["gate"] == 'CX':
-        continue
-    if instruction["gate"] == "Tfl":
-        continue
-    if instruction["gate"] == "SWAP":
-        continue
-    if instruction["gate"] == "Z":
-        qc.apply_Z_gate(target_qubit=instruction["qubits"][0])
-    if instruction["gate"] == "S":
-        qc.apply_S_gate(target_qubit=instruction["qubits"][0])
-    if instruction["gate"] == "S+":
-        qc.apply_S_dag_gate(target_qubit=instruction["qubits"][0])
-    if instruction["gate"] == "T":
-         qc.apply_T_gate(target_qubit=instruction["qubits"][0])
-    if instruction["gate"] == "T+":
-        qc.apply_T_dag_gate(target_qubit=instruction["qubits"][0])
-    if instruction["gate"] == "P":
-        qc.apply_P_gate(target_qubit=instruction["qubits"][0], phi=instruction["parameters"][0])
-    if instruction["gate"] == "RX":
-        continue
-    if instruction["gate"] == "RY":
-        continue
-    if instruction["gate"] == "RZ":
-        continue
-    if instruction["gate"] == 'Y':
-        continue
-    if instruction["gate"] == 'U':
-        continue
-    if instruction["gate"] == "SX":
-        continue
-    if instruction["gate"] == "SX+":
-        continue
-    if instruction["gate"] == "M":
-        continue
+if "--import" in sys.argv:
+    index = sys.argv.index("--import")
+    json_filename = sys.argv[index + 1]
+    circuit = Circuit.import_circuit(json_filename)
+    circuit.run()
+    qc = circuit.system_state
+
+else:
+    # Read the instructions    
+    instructions = []
+    pos = 4
+    for _ in range(num_instructions):
+        gate = sys.argv[pos]
+        qubits = []
+        bits = []
+        parameters = []
+        if gate in ['I', 'H', 'X', 'Z', 'S', 'S+', 'T', 'T+', 'Y', 'SX', 'SX+']:
+            qubits = [int(sys.argv[pos+1])]
+            pos += 2
+        elif gate in ['CX', 'SWAP']:
+            qubits = [int(sys.argv[pos + 1]), int(sys.argv[pos + 2])] # KetBy first saves the target, then the control (as opposed to qiskit)
+            pos += 3
+        elif gate in ['Tfl']:
+            qubits = [int(sys.argv[pos + 1]), int(sys.argv[pos + 2]), int(sys.argv[pos + 3])]
+            pos += 4
+        elif gate in ['P', 'RX', 'RY', 'RZ']:
+            qubits = [int(sys.argv[pos + 1])]
+            parameters = [eval_simple_fraction(sys.argv[pos + 2])]
+            pos += 3
+        elif gate in ['U']:
+            qubits = [int(sys.argv[pos + 1])]
+            parameters = [
+                eval_simple_fraction(sys.argv[pos + 2]), 
+                eval_simple_fraction(sys.argv[pos + 3]), 
+                eval_simple_fraction(sys.argv[pos + 4])
+            ]
+            pos += 5
+        elif gate in ['M']:
+            qubits = [int(sys.argv[pos + 1])]
+            bits = [int(sys.argv[pos + 2])]
+            pos += 3
+        instructions.append({"gate": gate, "qubits": qubits, "bits": bits, "parameters": parameters})
+
+    qc = State(n_qubits=num_qubits)
+
+    for instruction in instructions:
+        if instruction["gate"] == 'H':
+            qc.apply_H_gate(instruction["qubits"][0])
+        elif instruction["gate"] == 'X':
+            qc.apply_X_gate(instruction["qubits"][0])
+        if instruction["gate"] == 'CX':
+            continue
+        if instruction["gate"] == "Tfl":
+            continue
+        if instruction["gate"] == "SWAP":
+            continue
+        if instruction["gate"] == "Z":
+            qc.apply_Z_gate(target_qubit=instruction["qubits"][0])
+        if instruction["gate"] == "S":
+            qc.apply_S_gate(target_qubit=instruction["qubits"][0])
+        if instruction["gate"] == "S+":
+            qc.apply_S_dag_gate(target_qubit=instruction["qubits"][0])
+        if instruction["gate"] == "T":
+            qc.apply_T_gate(target_qubit=instruction["qubits"][0])
+        if instruction["gate"] == "T+":
+            qc.apply_T_dag_gate(target_qubit=instruction["qubits"][0])
+        if instruction["gate"] == "P":
+            qc.apply_P_gate(target_qubit=instruction["qubits"][0], phi=instruction["parameters"][0])
+        if instruction["gate"] == "RX":
+            qc.apply_RX_gate(target_qubit=instruction["qubits"][0], theta=instruction["parameters"][0])
+        if instruction["gate"] == "RY":
+            qc.apply_RY_gate(target_qubit=instruction["qubits"][0], theta=instruction["parameters"][0])
+        if instruction["gate"] == "RZ":
+            qc.apply_RZ_gate(target_qubit=instruction["qubits"][0], theta=instruction["parameters"][0])
+        if instruction["gate"] == 'Y':
+            qc.apply_Y_gate(target_qubit=instruction["qubits"][0])
+        if instruction["gate"] == 'U':
+            qc.apply_U_gate(target_qubit=instruction["qubits"][0], theta=instruction["parameters"][0], phi=instruction["parameters"][1], lmbd=instruction["parameters"][2])
+        if instruction["gate"] == "SX":
+            qc.apply_SX_gate(target_qubit=instruction["qubits"][0])
+        if instruction["gate"] == "SX+":
+            qc.apply_SX_dag_gate(target_qubit=instruction["qubits"][0])
+        if instruction["gate"] == "M":
+            continue
 
 
 # Daca e request de simulare, rulam circuitul de un anumit numar de ori si intoarcem doar probabilitatile
@@ -117,6 +128,7 @@ if simulate:
         _shots = int(sys.argv[index + 1])
     else:
         _shots = shots
+
     counts = { 
         '00': shots / 4,
         '01': shots / 4,
@@ -130,10 +142,12 @@ else:
 
     phases = np.angle(statevector)
 
-    dummyProbabilities = [
+    dct = qc.get_state_probabilities_json()
+    
+    probabilities = [
             {
-                'value': convert_to_binary(i, num_bits), 
-                'probability': (1 / (2 ** num_bits)) * 100
+                'value': dct[i]['value'], 
+                'probability': dct[i]['probability'] * 100
             } for i in range(2 ** num_bits)
         ] if num_bits > 0 else None
 
@@ -150,7 +164,7 @@ else:
     # adica cate o intrare pentru fiecare configuratie de biti
 
     output = {
-        'probabilities': dummyProbabilities, # TODO
+        'probabilities': probabilities,
         'qubits': None, # not implemented on front-end, leave it empty
         'statevector': {
             'amplitudes': [{

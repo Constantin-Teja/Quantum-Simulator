@@ -24,6 +24,8 @@ if __name__ == '__main__':
 
     print(x.get_gate())
 
+    circuit.system_state.display_state_amplitudes()
+
 
 
     #circuit.system_state.display_state()

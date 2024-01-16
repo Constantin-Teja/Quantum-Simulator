@@ -179,6 +179,20 @@ class State:
         for basis_state, amplitude in state_amplitudes.items():
             print(f"|{basis_state}>: {amplitude}")
 
+    def get_state_probabilities_json(self):
+        state_amplitudes = self.calculate_state_amplitudes()
+
+        probabilities = self.compute_probabilities()
+
+        dct = []
+        index = 0
+        # Display the state amplitudes
+        for basis_state, amplitude in state_amplitudes.items():
+            dct.append({"value": {basis_state}, "probability": {probabilities[index]}})
+            index = index + 1
+
+        return dct
+
     def compute_probabilities(self, base_name = "COMPUTATIONAL"):
         # Initialize probabilities array
         probabilities = np.zeros(len(self.state))

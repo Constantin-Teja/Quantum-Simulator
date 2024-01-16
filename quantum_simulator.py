@@ -149,6 +149,21 @@ class State:
     def apply_T_dag_gate(self, target_qubit):
         self.apply_gate(np.array([[1, 0], [0, np.exp(-(1j * np.pi)/4)]]), 1, target_qubit)
 
+    def apply_RX_gate(self, target_qubit, theta):
+        self.apply_gate(np.array([[np.cos(theta/2), -1j * np.sin(theta/2)], [-1j * np.sin(theta/2), np.cos(theta/2) ]]), 1, target_qubit)
+
+    def apply_RY_gate(self, target_qubit, theta):
+        self.apply_gate(np.array([[np.cos(theta/2), -np.sin(theta/2)], [np.sin(theta/2), np.cos(theta/2)]]), 1, target_qubit)
+
+    def apply_RZ_gate(self, target_qubit, theta):
+        self.apply_gate(np.array([[np.exp(-1j * (theta/2)), 0], [0, np.exp(1j * (theta/2))]]), 1, target_qubit)
+
+    def apply_SX_gate(self, target_qubit):
+        self.apply_gate(np.array([[(1 + 1j)/2, (1 - 1j)/2], [(1 - 1j)/2, (1 + 1j)/2]]), 1, target_qubit)
+
+    def apply_SX_dag_gate(self, target_qubit):
+        self.apply_gate(np.array([[(1 - 1j)/2, (1 + 1j)/2], [(1 + 1j)/2, (1 - 1j)/2]]), 1, target_qubit)
+
     def compute_probabilities(self):
         probabilities = np.abs(self.state)**2
 

@@ -7,10 +7,13 @@ class State:
     # This class should contain methods which have effect upon state
     # or is an intrisec property
 
-    def __init__(self, n_qubits: np.uint16):
+    def __init__(self, n_qubits, state=None):
         self.n_qubits = n_qubits # TODO: make private
-        self.state = np.zeros((2**n_qubits, 1), dtype=np.complex64)
-        self.state[0] = 1 # Set |00...0> as default state
+        if state is not None:
+            self.state = state
+        else:
+            self.state = np.zeros((2**n_qubits, 1), dtype=np.complex64)
+            self.state[0] = 1 # Set |00...0> as default state
 
     def initialize_state(self, qubit_values):
         assert len(qubit_values) == self.n_qubits

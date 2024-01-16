@@ -17,25 +17,6 @@ class State:
             sum_of_coefficients = sum_of_coefficients + qubit_values[i] * 2**(len(qubit_values) - i - 1)
         self.state[sum_of_coefficients][0] = 1
 
-    # cteja TODO: delete: Sa ii inlocuiesc functionalitatea in Gate.py
-    # def create_custom_gate(self, matrix=None, gates=None):
-    #         """Create a custom gate, either from a matrix or by composing other gates."""
-    #         if matrix is not None:
-    #             if self.is_valid_gate(matrix):
-    #                 return matrix
-    #             else:
-    #                 raise ValueError("Matrix is not unitary.")
-    #         elif gates is not None:
-    #             composite_matrix = gates[0]
-    #             for gate in gates[1:]:
-    #                 composite_matrix = np.dot(composite_matrix, gate)
-    #             if self.is_valid_gate(composite_matrix):
-    #                 return composite_matrix
-    #             else:
-    #                 raise ValueError("Composite gate is not unitary.")
-    #         else:
-    #             raise ValueError("Either a matrix or a list of gates is required.")
-
     def apply_gate(self, gate, n_gate, starting_qubit):
         applied_gate = np.identity(1)
 
@@ -81,7 +62,7 @@ class State:
 
     # TODO: unittest
     def produce_measurement(self, base_name):
-        return qh.measure(self.state, base_name)
+        return qh.produce_measurement(self.state, self.n_qubits, base_name)
 
     # TODO: unittest
     def calculate_state_amplitudes(self):
@@ -123,3 +104,13 @@ class State:
         # Display the state amplitudes
         for basis_state, amplitude in state_amplitudes.items():
             print(f"|{basis_state}>: {amplitude}")
+
+    def compute_density_matrix(self, base_name = "COMPUTATIONAL"):
+        probabilities = qh.compute_probabilities(self.state, self.n_qubits, base_name)
+        extended_base = qh.get_extended_basis("COMPUTATIONAL", self.n_qubits)
+
+        density_matrix = np.zeros((len(self.state), len(self.state)))
+        for i in range(len(extended_base)):
+            density_matrix = density_matrix + probabilities[i] * np.outer(qh.compute_adjoint(extended_base[i]), extended_base[i])
+
+        return density_matrix

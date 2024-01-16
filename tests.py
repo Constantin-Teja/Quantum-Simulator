@@ -63,19 +63,37 @@ class State_Tests(unittest.TestCase):
 
 class Quantum_Helper_Tests(unittest.TestCase):
     
-    def test_measurement(self):
+    def test_produce_measurement(self):
         state_1 = State(1)
         state_2 = State(2)
         state_3 = State(1)
 
         state_2.initialize_state(np.array([1, 1]))
+        
         state_3.initialize_state([1])
+        state_3.apply_H_gate(0)
 
-        self.assertTrue(np.allclose(qh.measure(state_1.state, "COMPUTATIONAL"), np.array([[1], [0]])))
-        self.assertTrue(np.allclose(qh.measure(state_2.state, "COMPUTATIONAL"), np.array([[0], [0], [0], [1]])))
-        self.assertTrue(np.allclose(qh.measure(state_3.state, "HADAMARD"), np.array([[1], [1]]) / qh.sqrt2))
+        self.assertTrue(np.allclose(qh.produce_measurement(state_1.state, 1, "COMPUTATIONAL"), np.array([[0]])))
+        self.assertTrue(np.allclose(qh.produce_measurement(state_2.state, 2, "COMPUTATIONAL"), np.array([[1], [1]])))
+        self.assertTrue(np.allclose(qh.produce_measurement(state_3.state, 1, "HADAMARD"), np.array([[0]])))
 
+    def test_produce_density_matrix(self):
+        state = State(2)
 
+        self.assertTrue(np.allclose(state.compute_density_matrix(), np.array([ [1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0] ])))
+        self.assertTrue(np.allclose(state.compute_density_matrix("HADAMARD"), np.array([ [0.25, 0, 0, 0], [0, 0.25, 0, 0], [0, 0, 0.25, 0], [0, 0, 0, 0.25] ])))
+
+        state.initialize_state([1, 1])
+
+        self.assertTrue(np.allclose(state.compute_density_matrix(), np.array([ [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1] ])))
+        self.assertTrue(np.allclose(state.compute_density_matrix("HADAMARD"), np.array([ [0.25, 0, 0, 0], [0, 0.25, 0, 0], [0, 0, 0.25, 0], [0, 0, 0, 0.25] ])))
+
+        state.apply_H_gate(0)
+        state.apply_H_gate(1)
+        
+        self.assertTrue(np.allclose(state.compute_density_matrix(), np.array([ [0.25, 0, 0, 0], [0, 0.25, 0, 0], [0, 0, 0.25, 0], [0, 0, 0, 0.25] ])))
+        self.assertTrue(np.allclose(state.compute_density_matrix("HADAMARD"), np.array([ [1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0] ])))
+        
 
 # Main entry point to run the tests
 if __name__ == '__main__':

@@ -25,6 +25,14 @@ class Gate:
         self.__gate = gate
 
     @staticmethod
+    def create_by_composing(gates):
+        composite_gate = gates[0]
+        for gate in gates[1:]:
+            composite_gate = np.dot(composite_gate, gate)
+
+        return Gate(composite_gate)
+
+    @staticmethod
     def __is_valid(gate):
         return np.allclose(np.dot(gate, qh.compute_adjoint(gate)), np.identity(len(gate)))
         
